@@ -1,5 +1,6 @@
 #Author: Walter Nam
 import sys
+import pprint
 import numpy as np
 import scipy as sp
 from scipy import linalg
@@ -46,8 +47,13 @@ class Data:
     
         print("Solution of the system")
         print(x)
-        print("LU decomposition")
-        print(sp.linalg.lu(A))
+        print("LU factors")
+        (P, L, U) = sp.linalg.lu(A)
+        print("L")
+        pprint.pprint(L)
+        print("U")
+        pprint.pprint(U)
+        return ""
 
 A = np.array([
     [1, -1, 2,-1],
