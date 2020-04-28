@@ -29,6 +29,8 @@ class Data:
                 b[k] = b[i] - b[k] * factor
         print(A)
         print(b)
+
+        #Backward substitution
         x[n - 1] = b[n - 1] / A[n - 1, n - 1]
         for i in range(n - 2, -1, -1):
             sum_ax = 0
