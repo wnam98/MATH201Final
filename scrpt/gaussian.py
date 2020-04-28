@@ -3,6 +3,7 @@ import sys
 import pprint
 import numpy as np 
 import scipy as sp
+import sympy
 from scipy import linalg
 
 
@@ -47,18 +48,30 @@ class Data:
 
         return A, b, x
 
-    def check_valid_solution(self, A, b, gauss):
+    def check_valid_solution(self, A, b, gauss, free_variable_solution):
         solution = gauss(A, b)[2]
         b_0 = gauss(A, b)[1]
         A_0 = gauss(A, b)[0]
-        n = len(A_0)
-        if np.isnan(np.sum(solution)):
+        if np.isnan(solution[0]):
             print("There are an infinite number of solutions")
             print("Solution with free variable = 1")
-            return ""
-
+            fv = 1
+            free_variable_solution(A_0, b_0, fv, solution)
+            print("Solution with free variable = -1")
+            fv = -1
+            free_variable_solution(A_0, b_0, fv, solution)
+        elif np.isinf(solution[0]):
+            print("No Solution")
         else:
-            return solution
+            print(solution)
+        
+    def free_variable_solution(self, A_0, b_0, free_variable, solution_vector):
+        x2 = free_variable
+        x3 = solution_vector[len(solution_vector) - 1]
+        x = sympy.symbols('x')
+        expr = b_0[0] - A_0[0][0]*x - A_0[0][1]*x2  - A_0[0][2]*x3  
+        x1 = sympy.solve(expr)
+        print(np.array([x1[0], x2, x3], float))
     
     def lu_decomp(self, A):
         (P, L, U) = sp.linalg.lu(A)
@@ -71,12 +84,11 @@ class Data:
 A = np.array([
     [1,1,1],
     [2,2,1],
-    [1,1,2]], 
+    [1,1,2]
+    ], 
     float)
 
-b = np.array([4,6,6], float)
+b = np.array([4,4,6], float)
 data = Data(A, b)
-#print(data.computed_sol(A,b))
-#print(data.gaussian(A, b))
-#print(data.lu_decomp(A))
-print(data.check_valid_solution(A, b, data.gaussian))
+print(data.check_valid_solution(A, b, data.gaussian, data.free_variable_solution))
+print(data.lu_decomp(A))
