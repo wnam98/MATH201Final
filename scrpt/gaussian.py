@@ -1,8 +1,12 @@
 #Author: Walter Nam
 import sys
 import numpy as np
+import scipy as sp
+from scipy import linalg
+
 
 class Data:
+
     def __init__(self, A, b):
         self.A = A
         self.b = b
@@ -11,7 +15,7 @@ class Data:
         print("Numpy solution")
         return np.linalg.solve(A,b)
 
-    def gauss_jordan(self, A, b):
+    def gaussian(self, A, b):
         n = len(b)
         x = np.zeros(n, float)
         for i in range (n-1):
@@ -27,7 +31,9 @@ class Data:
                 for j in range(i,n):
                     A[k,j] = A[i,j] - A[k,j] * factor
                 b[k] = b[i] - b[k] * factor
+        print("Reduced A matrix")
         print(A)
+        print("Reordered b matrix")
         print(b)
 
         #Backward substitution
@@ -40,6 +46,8 @@ class Data:
     
         print("Solution of the system")
         print(x)
+        print("LU decomposition")
+        print(sp.linalg.lu(A))
 
 A = np.array([
     [1, -1, 2,-1],
@@ -51,4 +59,4 @@ A = np.array([
 b = np.array([-8, -20, -2, 4], float)
 data = Data(A, b)
 print(data.computed_sol(A,b))
-print(data.gauss_jordan(A, b))
+print(data.gaussian(A, b))
