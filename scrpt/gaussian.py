@@ -1,7 +1,7 @@
 #Author: Walter Nam
 import sys
 import pprint
-import numpy as np
+import numpy as np 
 import scipy as sp
 from scipy import linalg
 
@@ -14,7 +14,11 @@ class Data:
 
     def computed_sol(self, A, b):
         print("Numpy solution")
-        return np.linalg.solve(A,b)
+        try:
+            return np.linalg.solve(A,b) 
+        except np.linalg.LinAlgError:
+            print("No solution")
+            return None
 
     def gaussian(self, A, b):
         n = len(b)
@@ -32,10 +36,6 @@ class Data:
                 for j in range(i,n):
                     A[k,j] = A[i,j] - A[k,j] * factor
                 b[k] = b[i] - b[k] * factor
-        print("Reduced A matrix")
-        print(A)
-        print("Reordered b matrix")
-        print(b)
 
         #Backward substitution
         x[n - 1] = b[n - 1] / A[n - 1, n - 1]
@@ -43,26 +43,40 @@ class Data:
             sum_ax = 0
             for j in range(i + 1, n):
                 sum_ax += A[i, j] * x[j]
-            x[i] = (b[i] - sum_ax) / A[i,i]
+            x[i] = (b[i] - sum_ax) / A[i,i] 
+
+        return A, b, x
+
+    def check_valid_solution(self, A, b, gauss):
+        solution = gauss(A, b)[2]
+        b_0 = gauss(A, b)[1]
+        A_0 = gauss(A, b)[0]
+        n = len(A_0)
+        if np.isnan(np.sum(solution)):
+            print("There are an infinite number of solutions")
+            print("Solution with free variable = 1")
+            return ""
+
+        else:
+            return solution
     
-        print("Solution of the system")
-        print(x)
-        print("LU factors")
+    def lu_decomp(self, A):
         (P, L, U) = sp.linalg.lu(A)
-        print("L")
+        print("L factor:")
         pprint.pprint(L)
-        print("U")
+        print("U factor:")
         pprint.pprint(U)
         return ""
 
 A = np.array([
-    [1, -1, 2,-1],
-    [2,-2, 3, -3],
-    [1, 1, 1, 0],
-    [1, -1, 4, 3]], 
+    [1,1,1],
+    [2,2,1],
+    [1,1,2]], 
     float)
 
-b = np.array([-8, -20, -2, 4], float)
+b = np.array([4,6,6], float)
 data = Data(A, b)
-print(data.computed_sol(A,b))
-print(data.gaussian(A, b))
+#print(data.computed_sol(A,b))
+#print(data.gaussian(A, b))
+#print(data.lu_decomp(A))
+print(data.check_valid_solution(A, b, data.gaussian))
