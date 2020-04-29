@@ -1,0 +1,234 @@
+\documentclass{article}    
+\usepackage{amsmath}
+\usepackage{graphicx}
+\begin{document}           
+
+    \title{Implementing Gaussian Elimination in Python}          
+    \author{Walter Nam  (wkn2)}        
+    \date{May 1, 2020}      
+
+    \maketitle             
+
+    \section{Introduction} 
+    Gaussian elimination is a method in linear algebra to solve a series of linear equations. The process involves performing a series of operations on the corresponding coefficients matrix (also known as the A matrix). Gaussian elimination can also be used to calculate the rank of a matrix, find the determinant of a matrix, and calculate the inverse of a square matrix. To perform row reduction, a series of elementary row operations must be utilized to transform the given matrix to one whose lower left corner is filled with zeros, also known as an "upper triangular" matrix. Such row operations include: swapping rows, multiplying a row by a scalar, and adding a multiple of one row to another row. The solution vector can be derived by using a process called "back-substitution", where the known variables are substituted into other equations to solve for the rest of the unknowns. A special type of reduced matrix, called reduced row echelon form, can be derived using gaussian. This matrix is an upper triangular where all the leading coefficients of the rows are equal to 1, and each column containing a leading 1 has zeros in all other entries. Transforming an augmented matrix into this form makes back-substitution unnecessary, as the modified b vector becomes equivalent to the solution vector.  
+
+    \section{Application}  
+    We can demonstrate how gaussian elimination works on the following matrix: 
+      
+    a)
+        $$
+        A =  \begin{bmatrix}1&-1&2&-1\\2&-2&3&-3\\1&1&1&0\\1&-1&4&3\end{bmatrix} 
+b =   \begin{bmatrix}-8\\-20\\-2\\4\end{bmatrix} 
+        $$
+        
+        
+        We combine the A and b matrix to create an augmented matrix for row operations. The python algorithm in the following page performs the elementary row operations to reduce the matrix to row echelon form.  
+    
+    \begin{figure}[h]
+    \centering
+    \includegraphics[scale = 0.35]{row_ops}
+    \caption{Nested for loop that swaps two rows, and adds a multiple of one row to another row}
+    \end{figure}
+    
+    In the context of this matrix, we can reduce to row echelon by subtracting two times the first row from the second row, subtracting the first row from the third row, and finally subtracting the first row from the fourth row. 
+    
+    \begin{table}[h]
+    	\centering
+    	\begin{tabular}{c|c}
+    	
+    	 Augmented matrix & Row operations
+    	 \\ 
+    	 \hline    	 
+    	 \\
+    
+    	$\left[
+  \begin{matrix}
+    1 & -1 & 2 & -1\\  
+ 0 & 0 & -1 & -1\\
+ 0 & 2 & -1 & 1\\
+ 0 & 0 & 2 & 4 \\
+  \end{matrix}
+  \left|
+    \,
+    \begin{matrix}
+      -8  \\
+      -4  \\
+      6  \\
+      12  \\
+    \end{matrix}
+  \right.
+\right]$ & $R_{2} - 2R_{1}  \rightarrow R_{2}$, 	 $R_{3} - R_{1}  \rightarrow R_{3}$, 	$R_{4} - R_{1}  \rightarrow R_{4}$
+\\
+\\	
+    	$\left[
+  \begin{matrix}
+    1 & -1 & 2 & -1\\  
+ 0 & 2 & -1 & 1\\
+ 0 & 0 & -1 & -1\\
+ 0 & 0 & 2 & 4 \\
+  \end{matrix}
+  \left|
+    \,
+    \begin{matrix}
+      -8  \\
+      6  \\
+      -4  \\
+      12  \\
+    \end{matrix}
+  \right.
+\right]$ & $R_{2}   \leftrightarrow  R_{3}$
+\\
+\\
+
+$\left[
+  \begin{matrix}
+    1 & -1 & 2 & -1\\  
+ 0 & 1 & -\frac{1}{2} & \frac{1}{2}\\
+ 0 & 0 & -1 & -1\\
+ 0 & 0 & 2 & 4 \\
+  \end{matrix}
+  \left|
+    \,
+    \begin{matrix}
+      -8  \\
+      3  \\
+      -4  \\
+      12  \\
+    \end{matrix}
+  \right.
+\right]$ & $ \frac{R_{2}}{2}  \rightarrow R_{2}$
+
+\\
+\\
+
+$\left[
+  \begin{matrix}
+    1 & 0 & \frac{3}{2}  & -\frac{1}{2}\\  
+ 0 & 1 & -\frac{1}{2} & \frac{1}{2}\\
+ 0 & 0 & -1 & -1\\
+ 0 & 0 & 2 & 4 \\
+  \end{matrix}
+  \left|
+    \,
+    \begin{matrix}
+      -5  \\
+      3  \\
+      -4  \\
+      12  \\
+    \end{matrix}
+  \right.
+\right]$ & $ R_{1} + R_{2}  \rightarrow R_{1}$
+
+\\
+\\
+
+$\left[
+  \begin{matrix}
+    1 & 0 & \frac{3}{2}  & -\frac{1}{2}\\  
+ 0 & 1 & -\frac{1}{2} & \frac{1}{2}\\
+ 0 & 0 & 1 & 1\\
+ 0 & 0 & 2 & 4 \\
+  \end{matrix}
+  \left|
+    \,
+    \begin{matrix}
+      -5  \\
+      3  \\
+      4  \\
+      12  \\
+    \end{matrix}
+  \right.
+\right]$ & $ \frac{R_{3}}{-1}  \rightarrow R_{3}$
+
+\\
+\\
+
+$\left[
+  \begin{matrix}
+    1 & 0 & 0 & -2\\  
+ 0 & 1 & 0 & 1 \\
+ 0 & 0 & 1 & 1\\
+ 0 & 0 & 0 & 2 \\
+  \end{matrix}
+  \left|
+    \,
+    \begin{matrix}
+      -11  \\
+      5  \\
+      4  \\
+      4  \\
+    \end{matrix}
+  \right.
+\right]$ & $R_{1} - \frac{3}{2}R_{3}  \rightarrow R_{1}$, 	 $R_{2} + \frac{1}{2}R_{3}  \rightarrow R_{2}$, 	$R_{4} - 2R_{3}  \rightarrow R_{4}$
+
+\\
+\\
+
+$\left[
+  \begin{matrix}
+    1 & 0 & 0 & -2\\  
+ 0 & 1 & 0 & 1 \\
+ 0 & 0 & 1 & 1\\
+ 0 & 0 & 0 & 1 \\
+  \end{matrix}
+  \left|
+    \,
+    \begin{matrix}
+      -11  \\
+      5  \\
+      4  \\
+      2  \\
+    \end{matrix}
+  \right.
+\right]$ & $\frac{R_{4}}{2}  \rightarrow R_{4}$
+
+\\
+\\
+
+$\left[
+  \begin{matrix}
+    1 & 0 & 0 & 0\\  
+ 0 & 1 & 0 & 0 \\
+ 0 & 0 & 1 & 0\\
+ 0 & 0 & 0 & 1 \\
+  \end{matrix}
+  \left|
+    \,
+    \begin{matrix}
+      -7  \\
+      3  \\
+      2  \\
+      2  \\
+    \end{matrix}
+  \right.
+\right]$ & $R_{1} + 2R_{4}  \rightarrow R_{1}$, $R_{2} - R_{4}  \rightarrow R_{2}$, 	$R_{3} - R_{4}  \rightarrow R_{3}$
+
+    \end{tabular}
+    \caption{Stages of the augmented matrix and its corresponding elementary row operations.}
+   \end{table}
+   
+ 
+        \subsection{Second Example}              
+        b)
+    	$$
+    	A =  \begin{bmatrix}1&1&1\\2&2&1\\1&1&2\end{bmatrix} 
+b =   \begin{bmatrix}4\\6\\6\end{bmatrix} 
+    	$$    
+
+        \subsection{Third Example}
+        c)
+    	$$
+    	A =  \begin{bmatrix}1&1&1\\2&2&1\\1&1&2\end{bmatrix} 
+b =   \begin{bmatrix}4\\4\\6\end{bmatrix} 
+    	$$              
+ 
+    \section{Code Review} 
+    Add the ipynb here.                    
+
+    \section{Discussion}   
+    Discuss your results.
+
+    \section{Conclusion}
+    Explain how the solution vector is derived after using back-substitution following gaussian elimination.
+
+\end{document}
