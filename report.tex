@@ -12,26 +12,42 @@
     \section{Introduction} 
     Gaussian elimination is a method in linear algebra to solve a series of linear equations. The process involves performing a series of operations on the corresponding coefficients matrix (also known as the A matrix). Gaussian elimination can also be used to calculate the rank of a matrix, find the determinant of a matrix, and calculate the inverse of a square matrix. To perform row reduction, a series of elementary row operations must be utilized to transform the given matrix to one whose lower left corner is filled with zeros, also known as an "upper triangular" matrix. Such row operations include: swapping rows, multiplying a row by a scalar, and adding a multiple of one row to another row. The solution vector can be derived by using a process called "back-substitution", where the known variables are substituted into other equations to solve for the rest of the unknowns. A special type of reduced matrix, called reduced row echelon form, can be derived using gaussian. This matrix is an upper triangular where all the leading coefficients of the rows are equal to 1, and each column containing a leading 1 has zeros in all other entries. Transforming an augmented matrix into this form makes back-substitution unnecessary, as the modified b vector becomes equivalent to the solution vector.  
 
-    \section{Application}  
-    We can demonstrate how gaussian elimination works on the following matrix: 
-      
-    a)
-        $$
+    \section{Algorithm and Row Operations}  
+    We can apply gaussian elimination to find the solution vectors of the following example matrices. An explanation of the algorithm and the row reduction operations are also provided below. 
+    \\
+    \\
+       a) $$
         A =  \begin{bmatrix}1&-1&2&-1\\2&-2&3&-3\\1&1&1&0\\1&-1&4&3\end{bmatrix} 
 b =   \begin{bmatrix}-8\\-20\\-2\\4\end{bmatrix} 
         $$
         
+       b)$$
+        A =  \begin{bmatrix}1&1&1\\2&2&1\\1&1&2\end{bmatrix} 
+b =   \begin{bmatrix}4\\6\\6\end{bmatrix} 
+        $$
         
-        We combine the A and b matrix to create an augmented matrix for row operations. The python algorithm in the following page performs the elementary row operations to reduce the matrix to row echelon form.  
+      c)  $$
+        A =  \begin{bmatrix}1&1&1\\2&2&1\\1&1&2\end{bmatrix} 
+b =   \begin{bmatrix}4\\4\\6\end{bmatrix} 
+        $$
+       \\
+       \\
+        To solve the system of equations, the number of equations should be equivalent to the number of unknowns. We can express the system in matrix form, with A representing the coefficients of the unknowns, and b representing the constant terms of the equations. In reducing the coefficients matrix, the first row will be fixed, as it acts as a reference row for elimination. The elements of the first column below the first row will be transformed to zero, and the elements of the rows below the reference are multiplied by a factor. The factor is defined as the main diagonal element of the reference row divided by the first element of the corresponding row. Thus, subtracting these rows from the reference row will result in all the elements below the reference element of the first column to be equal to 0. The python algorithm traverses the matrix to perform this operation until reaching the $n - 1$ column. 
+        However, in case of 0 values located in the main diagonal, this algorithm implements partial pivoting to swap rows. The pivot element is defined as the first non zero element of the reference row, and determines the factor that will be multiplied to the rows that will be subtracted from the reference row. To avoid division by 0, partial pivoting involves a simple swap of the row containing a 0 pivot, with a another non-zero pivot row below it. The corresponding row in the b vector should also be swapped accordingly. This process is called "partial pivoting" because the columns are not swapped in the process.
     
     \begin{figure}[h]
     \centering
     \includegraphics[scale = 0.35]{row_ops}
-    \caption{Nested for loop that swaps two rows, and adds a multiple of one row to another row}
+    \caption{Three nested for loops demonstrating partial pivoting. i represents the index of the fixed row, j represents the indices of the rows below the reference, and k represents the indices of the columns. The outermost loop acts as the index between the fixed rows and eliminated columns, whereas the next inner loop applies the elimination to rows below the reference or "fixed" row. This loop calculates the factor for each row and the corresponding b element. The inner most j loop performs the calculations of the element of each row on the corresponding column. The algorithm skips elimination for any rows containing a 0 element under the main diagonal and applies partial pivoting. This process begins by checking the absolute value of the pivot element and examining its convergence to zero. The inner j loop compares the absolute values of the row elements below the reference row and executes a swap accordingly. 
+   }
     \end{figure}
     
-    In the context of this matrix, we can reduce to row echelon by subtracting two times the first row from the second row, subtracting the first row from the third row, and finally subtracting the first row from the fourth row. 
-    
+        \begin{figure}[t]
+    \centering
+    \includegraphics[scale = 0.35]{back_sub}
+    \caption{Back substitution algorithm starts calculating $x_n-1$ then uses two nested for loops. The outer loop indexes the up to the second to last column of the matrix. The inner loop calculates the sum of the $x$ element multiplied by the corresponding coefficient in the A matrix. The algorithm then plugs the value to solve for the unknowns in the upper equations from $n - 1$. The tables below demonstrate all the row operations performed in reducing the example matrices.}
+    \end{figure}
+     
     \begin{table}[h]
     	\centering
     	\begin{tabular}{c|c}
@@ -204,31 +220,140 @@ $\left[
 \right]$ & $R_{1} + 2R_{4}  \rightarrow R_{1}$, $R_{2} - R_{4}  \rightarrow R_{2}$, 	$R_{3} - R_{4}  \rightarrow R_{3}$
 
     \end{tabular}
-    \caption{Stages of the augmented matrix and its corresponding elementary row operations.}
+    \caption{Stages of the first example augmented matrix and its corresponding elementary row operations.}
    \end{table}
    
- 
-        \subsection{Second Example}              
-        b)
-    	$$
-    	A =  \begin{bmatrix}1&1&1\\2&2&1\\1&1&2\end{bmatrix} 
-b =   \begin{bmatrix}4\\6\\6\end{bmatrix} 
-    	$$    
+   \begin{table}[h]
+    	\centering
+    	\begin{tabular}{c|c}
+    	
+    	 Augmented matrix & Row operations
+    	 \\ 
+    	 \hline    	 
+    	 \\
+    	 $\left[
+  \begin{matrix}
+    1 & 1 & 1 \\  
+ 0 & 0 & -1  \\
+ 0 & 0 & 1 \\
+  \end{matrix}
+  \left|
+    \,
+    \begin{matrix}
+      4  \\
+      -2  \\
+      2  \\
+    \end{matrix}
+  \right.
+\right]$ & $R_{2} - 2R_{1} \rightarrow R_{2}$, $R_{3} - R_{1} \rightarrow R_{3}$
 
-        \subsection{Third Example}
-        c)
-    	$$
-    	A =  \begin{bmatrix}1&1&1\\2&2&1\\1&1&2\end{bmatrix} 
-b =   \begin{bmatrix}4\\4\\6\end{bmatrix} 
-    	$$              
- 
-    \section{Code Review} 
-    Add the ipynb here.                    
+\\
+\\
 
-    \section{Discussion}   
-    Discuss your results.
+ $\left[
+  \begin{matrix}
+    1 & 1 & 1 \\  
+ 0 & 0 & 1  \\
+ 0 & 0 & 1 \\
+  \end{matrix}
+  \left|
+    \,
+    \begin{matrix}
+      4  \\
+      2  \\
+      2  \\
+    \end{matrix}
+  \right.
+\right]$ & $\frac{R_{2}}{-1}  \rightarrow R_{2}$
 
-    \section{Conclusion}
-    Explain how the solution vector is derived after using back-substitution following gaussian elimination.
+\\
+\\
+
+$\left[
+  \begin{matrix}
+    1 & 1 & 0 \\  
+ 0 & 0 & 1  \\
+ 0 & 0 & 0 \\
+  \end{matrix}
+  \left|
+    \,
+    \begin{matrix}
+      2  \\
+      2  \\
+      0 \\
+    \end{matrix}
+  \right.
+\right]$ & $R_{1} - R_{2} \rightarrow R_{1}$, $R_{3} - R_{2} \rightarrow R_{3}$
+
+    \end{tabular}
+    \caption{Stages of the second example augmented matrix and its corresponding elementary row operations. Note that $x_1$ and $x_2$ are free variables, meaning this system has infinitely many solutions.}
+   \end{table}
+    	
+    	\begin{table}[h]
+    	\centering
+    	\begin{tabular}{c|c}
+    	
+    	 Augmented matrix & Row operations
+    	 \\ 
+    	 \hline    	 
+    	 \\
+    	 $\left[
+  \begin{matrix}
+    1 & 1 & 1 \\  
+ 0 & 0 & -1  \\
+ 0 & 0 & 1 \\
+  \end{matrix}
+  \left|
+    \,
+    \begin{matrix}
+      4  \\
+      -4  \\
+      2  \\
+    \end{matrix}
+  \right.
+\right]$ & $R_{2} - 2R_{1} \rightarrow R_{2}$, $R_{3} - R_{1} \rightarrow R_{3}$
+
+\\
+\\
+
+ $\left[
+  \begin{matrix}
+    1 & 1 & 1 \\  
+ 0 & 0 & 1  \\
+ 0 & 0 & 1 \\
+  \end{matrix}
+  \left|
+    \,
+    \begin{matrix}
+      4  \\
+      4  \\
+      2  \\
+    \end{matrix}
+  \right.
+\right]$ & $\frac{R_{2}}{-1}  \rightarrow R_{2}$
+
+\\
+\\
+
+$\left[
+  \begin{matrix}
+    1 & 1 & 0 \\  
+ 0 & 0 & 1  \\
+ 0 & 0 & 0 \\
+  \end{matrix}
+  \left|
+    \,
+    \begin{matrix}
+      0  \\
+      4  \\
+      -2 \\
+    \end{matrix}
+  \right.
+\right]$ & $R_{1} - R_{2} \rightarrow R_{1}$, $R_{3} - R_{2} \rightarrow R_{3}$
+
+    \end{tabular}
+    \caption{Stages of the third example augmented matrix and its corresponding elementary row operations. This system has no solution, as 0 != -2.}
+   \end{table}           
+
 
 \end{document}
