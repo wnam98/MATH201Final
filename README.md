@@ -21,7 +21,7 @@ However, in case of 0 values located in the main diagonal, this algorithm implem
 
 * [Jupyter Notebook](https://jupyter.org/) - The web environment used to write the python code
 * [Numpy](https://numpy.org/) - Third party framework for linear algebra/vector calculations
-* [Matplotlib](https://matplotlib.org/) - Python library for graphing and visualizations
+* [Sympy](https://www.sympy.org/en/index.html) - Python library for symbolic math and algebra
 
 ## Author
 
