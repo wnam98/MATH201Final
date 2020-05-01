@@ -7,7 +7,7 @@ Gaussian elimination is a method in linear algebra to solve a series of linear e
 We can apply gaussian elimination to find the solution vectors of the following example matrices. A demonstration of the row operations implemented by the algorithm are displayed below. 
 <br/>
 <br/>
-![matrices](https://raw.github.com/wnam98/MATH201Final/master/imgs/matrices.PNG "matrices"){ width=50% }
+![matrices](https://raw.github.com/wnam98/MATH201Final/master/imgs/matrices.PNG "matrices") {:height="24px" width="48px"}
 
     
 
