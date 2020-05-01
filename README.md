@@ -17,6 +17,16 @@ However, in case of 0 values located in the main diagonal, this algorithm implem
 ![second_mat](https://raw.github.com/wnam98/MATH201Final/master/imgs/second_mat.PNG "second_mat") 
 ![third_mat](https://raw.github.com/wnam98/MATH201Final/master/imgs/third_mat.PNG "third_mat") 
 
+## Tools/Frameworks
+
+* [Jupyter Notebook](https://jupyter.org/) - The web environment used to write the python code
+* [Numpy](https://numpy.org/) - Third party framework for linear algebra/vector calculations
+* [Matplotlib](https://matplotlib.org/) - Python library for graphing and visualizations
+
+## Author
+
+* **Walter Nam** - [profile](https://github.com/wnam98)
+
 
     
 
